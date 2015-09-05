@@ -564,6 +564,18 @@ impl Metadata {
     pub fn delete_gps_info(&self) {
         unsafe { gexiv2::gexiv2_metadata_delete_gps_info(self.raw) }
     }
+
+    pub fn get_exif_thumbnail(&self) -> Option<Vec<u8>> {
+        unsafe {
+            let mut buf: *mut u8 = std::ptr::null_mut();
+            let mut size = 0;
+            if gexiv2::gexiv2_metadata_get_exif_thumbnail(self.raw, &mut buf, &mut size) {
+                Some(Vec::from_raw_parts(buf, size as usize, size as usize))
+            } else {
+                None
+            }
+        }
+    }
 }
 
 impl Drop for Metadata {
